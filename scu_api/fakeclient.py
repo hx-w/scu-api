@@ -16,6 +16,7 @@ class FakeClient(SCUClient):
         self.cache = CacheTable()
         self.student_id = None
         self.passwd_hash = None
+        self.status = ClientStatus.INIT
 
     def set_baseinfo(self, stid: str, passwd: str, hashed: bool = False):
         self.student_id = stid

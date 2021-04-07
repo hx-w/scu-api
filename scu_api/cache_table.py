@@ -8,7 +8,7 @@ class CacheTable:
         }
     
     def exist(self, key: str) -> bool:
-        return key in self.table.keys()
+        return key in self.table.keys() and self.table.get(key)
     
     def query(self, key: str):
         return self.table.get(key)
