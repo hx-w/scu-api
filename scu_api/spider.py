@@ -41,7 +41,7 @@ class Spider:
             'captcha': 'http://zhjw.scu.edu.cn/img/captcha.jpg',
             'login': 'http://zhjw.scu.edu.cn/j_spring_security_check',
             'student_name': 'http://zhjw.scu.edu.cn/student/rollManagement/rollInfo/index',
-            'student_pic': '',
+            'student_pic': 'http://zhjw.scu.edu.cn/main/queryStudent/img?',
         }
 
         self.pattens = {
@@ -98,7 +98,22 @@ class Spider:
         stdname = re.search(
             self.pattens['student_name'], fetname_resp.content.decode('utf-8')
         )
-
         assert stdname, '没有找到姓名'
 
         return stdname[0][7:].replace('的照片', '')
+
+    @req_logger('try fetch student picture')
+    def fetch_student_pic(self, filepath: str = None) -> str:
+        fetpic_headers = {
+            'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
+            'Referer': 'http://zhjw.scu.edu.cn/student/courseSelect/thisSemesterCurriculum/index'
+        }
+        fetpic_headers = dict(self.base_headers, **fetpic_headers)
+        
+        fetpic_resp = self.session.get(url=self.urls['student_pic'], headers=fetpic_headers)
+        assert fetpic_resp.status_code == requests.codes.ok, 'Network Issue'
+        if filepath:
+            with open(filepath, 'wb') as imfile:
+                imfile.write(fetpic_resp.content)
+        return base64Img_encode(fetpic_resp.content)
+    

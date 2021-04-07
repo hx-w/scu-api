@@ -10,3 +10,6 @@ def password_encryption(password: str) -> str:
 
 def base64Img_encode(image: bytes) -> str:
     return str(base64.b64encode(image), 'utf-8')
+
+def base64Img_decode(b64_image: str) -> bytes:
+    return base64.b64decode(b64_image)

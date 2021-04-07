@@ -2,17 +2,8 @@
 from abc import ABCMeta, abstractmethod
 from typing import Tuple
 
-from .constant import ClientStatus
-
 
 class SCUClient(metaclass=ABCMeta):
-    def __init__(self):
-        self.student_id = None
-        self.passwd_hash = None
-        self.student_name = None
-        self.pic_url = None
-        self.status = ClientStatus.INIT
-
     @abstractmethod
     def set_baseinfo(self, stid: str, passwd: str, hashed: bool = False):
         '''
