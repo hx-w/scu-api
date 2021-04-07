@@ -7,5 +7,6 @@ logging.basicConfig(
     format="%(asctime)s -%(name)s - %(levelname)s - %(message)s"
 )
 
+
 def get_mylogger(name: str):
     return logging.getLogger(name)
