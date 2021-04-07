@@ -49,5 +49,9 @@ class SCUClient(metaclass=ABCMeta):
 
     @abstractmethod
     def get_student_pic(self, use_cache: bool, filepath: str = None) -> Tuple[bool, str]:
-
-        ...
+        '''
+        @brief 获取学生照片
+        @param[in] use_cache(bool) 是否使用缓存数据
+        @param[out] success(bool) 是否获取成功
+        @param[out] student_pic(str) 图片的base64编码
+        '''
