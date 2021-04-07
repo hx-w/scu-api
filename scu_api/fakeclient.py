@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 
+import functools
 from .client import *
 from .utils import *
 from .spider import Spider
@@ -7,7 +9,7 @@ from .constant import ClientStatus
 
 class FakeClient(SCUClient):
     '''
-    定义一个登陆SCU教务处的假用户
+    A Fake client with SCU Api methods
     '''
 
     def __init__(self):
@@ -15,6 +17,14 @@ class FakeClient(SCUClient):
         self.student_id = None
         self.passwd_hash = None
         self.status = ClientStatus.INIT
+
+    def session_valid_required(func):
+        @functools.wraps(func)
+        def wrapper(self, *args, **kw):
+            if not self.session_valid():
+                return False, 'session invalid [login required]'
+            return func(*args, **kw)
+        return wrapper
 
     def set_baseinfo(self, stid: str, passwd: str, hashed: bool = False):
         self.student_id = stid
@@ -39,11 +49,11 @@ class FakeClient(SCUClient):
             return True  # for test
         return False
 
+    @session_valid_required
     def get_student_name(self) -> Tuple[bool, str]:
-        if not self.session_valid():
-            return False, '会话已过期，请重新登陆'
         return self.spider.fetch_student_name()
 
+    @session_valid_required
     def get_student_pic(self, filepath: str = None) -> Tuple[bool, str]:
         if not self.session_valid():
             return False, '会话已过期，请重新登陆'

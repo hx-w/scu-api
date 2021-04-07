@@ -1,9 +1,15 @@
 # -*- coding: utf-8 -*-
 from abc import ABCMeta, abstractmethod
-from typing import Tuple
+from typing import Tuple, Callable
 
 
 class SCUClient(metaclass=ABCMeta):
+    @abstractmethod
+    def session_valid_required(func: Callable):
+        '''
+        装饰器，用于确保session有效
+        '''
+
     @abstractmethod
     def set_baseinfo(self, stid: str, passwd: str, hashed: bool = False):
         '''
@@ -38,6 +44,7 @@ class SCUClient(metaclass=ABCMeta):
         @param[out] success(bool) 是否登录成功
         '''
 
+    @session_valid_required
     @abstractmethod
     def get_student_name(self) -> Tuple[bool, str]:
         '''
@@ -46,6 +53,7 @@ class SCUClient(metaclass=ABCMeta):
         @param[out] student_name(str) 学生姓名/失败反馈内容
         '''
 
+    @session_valid_required
     @abstractmethod
     def get_student_pic(self, filepath: str = None) -> Tuple[bool, str]:
         '''
