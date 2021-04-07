@@ -51,19 +51,17 @@ def login(self, catpcha: str, remember_me: bool) -> Tuple[bool, ]:
     '''
 
 @abstractmethod
-def get_student_name(self, use_cache: bool) -> Tuple[bool, str]:
+def get_student_name(self) -> Tuple[bool, str]:
     '''
     @brief 获取学生姓名
-    @param[in] use_cache(bool) 是否使用缓存数据
     @param[out] success(bool) 是否获取成功
     @param[out] student_name(str) 学生姓名/失败反馈内容
     '''
 
 @abstractmethod
-def get_student_pic(self, use_cache: bool, filepath: str = None) -> Tuple[bool, str]:
+def get_student_pic(self, filepath: str = None) -> Tuple[bool, str]:
     '''
     @brief 获取学生照片
-    @param[in] use_cache(bool) 是否使用缓存数据
     @param[out] success(bool) 是否获取成功
     @param[out] student_pic(str) 图片的base64编码
     '''
@@ -92,12 +90,12 @@ captcha_str = input('please type captcha string: ')
 # login scu with `remember_me on`
 success, _ = fakeclient.login(captcha_str, True)
 
-# get student name without local cache, maybe cost few secs.
-success, std_name = fakeclient.get_student_name(False)
+# get student name.
+success, std_name = fakeclient.get_student_name()
 
 print('Student:', std_name)
 
 # save student picture in `student.jpg` which is shown in scu official
-success, std_pic = fakeclient.get_student_pic(False, 'student.jpg')
+success, std_pic = fakeclient.get_student_pic('student.jpg')
 
 ```

@@ -2,7 +2,6 @@
 from .client import *
 from .utils import *
 from .spider import Spider
-from .cache_table import CacheTable
 from .constant import ClientStatus
 
 
@@ -13,7 +12,6 @@ class FakeClient(SCUClient):
 
     def __init__(self):
         self.spider = Spider()
-        self.cache = CacheTable()
         self.student_id = None
         self.passwd_hash = None
         self.status = ClientStatus.INIT
@@ -41,31 +39,12 @@ class FakeClient(SCUClient):
             return True  # for test
         return False
 
-    def get_student_name(self, use_cache: bool) -> Tuple[bool, str]:
-        if use_cache and self.cache.exist('student_name'):
-            return True, self.cache.query('student_name')
-
+    def get_student_name(self) -> Tuple[bool, str]:
         if not self.session_valid():
             return False, '会话已过期，请重新登陆'
+        return self.spider.fetch_student_name()
 
-        success, stdname = self.spider.fetch_student_name()
-        if success:
-            self.cache.update('student_name', stdname)
-        return success, stdname
-
-    def get_student_pic(self, use_cache: bool, filepath: str = None) -> Tuple[bool, str]:
-        if use_cache and self.cache.exist('student_pic'):
-            pic = self.cache.query('student_pic')
-            if filepath:
-                with open(filepath, 'wb') as imfile:
-                    imfile.write(base64Img_decode(pic))
-            return True, pic
-
+    def get_student_pic(self, filepath: str = None) -> Tuple[bool, str]:
         if not self.session_valid():
             return False, '会话已过期，请重新登陆'
-
-        success, stdpic = self.spider.fetch_student_pic(filepath)
-        if success:
-            self.cache.update('student_pic', stdpic)
-
-        return success, stdpic
+        return self.spider.fetch_student_pic(filepath)
