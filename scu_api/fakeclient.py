@@ -18,7 +18,7 @@ class FakeClient(SCUClient):
         self.passwd_hash = None
         self.status = ClientStatus.INIT
 
-    def session_valid_required(func):
+    def session_valid_required(func: Callable):
         @functools.wraps(func)
         def wrapper(self, *args, **kw):
             if not self.session_valid():

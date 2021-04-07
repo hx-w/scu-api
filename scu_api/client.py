@@ -44,7 +44,6 @@ class SCUClient(metaclass=ABCMeta):
         @param[out] success(bool) 是否登录成功
         '''
 
-    @session_valid_required
     @abstractmethod
     def get_student_name(self) -> Tuple[bool, str]:
         '''
@@ -53,11 +52,11 @@ class SCUClient(metaclass=ABCMeta):
         @param[out] student_name(str) 学生姓名/失败反馈内容
         '''
 
-    @session_valid_required
     @abstractmethod
     def get_student_pic(self, filepath: str = None) -> Tuple[bool, str]:
         '''
         @brief 获取学生照片
+        @param[in]  filepath(str) 存储图片的全路径，使用**.jpg**格式
         @param[out] success(bool) 是否获取成功
         @param[out] student_pic(str) 图片的base64编码
         '''
