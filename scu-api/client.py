@@ -25,8 +25,16 @@ class SCUClient(metaclass=ABCMeta):
         ...
     
     @abstractmethod
-    def login(self, lt: bool) ->  ClientStatus:
-        # 
+    def get_captcha(self) -> tuple(bool, str):
+        '''
+        @brief 先获取验证码，再登陆
+        @param[out] success(bool)  操作是否成功
+        @param[out] str(bool)      验证码url
+        '''
+
+    @abstractmethod
+    def login(self, lt: bool) ->  tuple(ClientStatus, str):
+        # 尝试登录并获取验证码
         ...
     
     @abstractmethod

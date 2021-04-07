@@ -19,5 +19,5 @@ class FakeClient(SCUClient):
 
 
     def login(self, lt: bool) -> ClientStatus:
-
+        
         pass
