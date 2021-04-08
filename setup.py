@@ -16,7 +16,7 @@ def read_requirements(filename):
 
 setuptools.setup(
     name="scu-api",
-    version="0.0.1",
+    version="0.0.1a0",
     author="CarOL",
     author_email="herixth@gmail.com",
     description="An api provide for Sichuan University",

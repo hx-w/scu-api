@@ -49,6 +49,7 @@ def login(self, catpcha: str, remember_me: bool) -> Tuple[bool, ]:
     @param[out] success(bool) 是否登录成功
     '''
 
+@session_valid_required
 @abstractmethod
 def get_student_name(self) -> Tuple[bool, str]:
     '''
@@ -57,6 +58,7 @@ def get_student_name(self) -> Tuple[bool, str]:
     @param[out] student_name(str) 学生姓名/失败反馈内容
     '''
 
+@session_valid_required
 @abstractmethod
 def get_student_pic(self, filepath: str = None) -> Tuple[bool, str]:
     '''
