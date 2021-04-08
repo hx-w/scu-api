@@ -19,7 +19,7 @@ setuptools.setup(
     version="0.0.1",
     author="CarOL",
     author_email="herixth@gmail.com",
-    description="An api provide for SCU",
+    description="An api provide for Sichuan University",
     long_description=read_file("README.md"),
     long_description_content_type="text/markdown",
     url="https://github.com/hx-w/scu-api",
