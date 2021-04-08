@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
 
 import functools
-from .client import *
+from .student import *
 from .utils import *
 from .spider import Spider
 from .constant import ClientStatus
 
 
-class FakeClient(SCUClient):
+class U_Student(SCUStudent):
     '''
-    A Fake client with SCU Api methods
+    A Fake Undergraduate student with SCU Api method
     '''
 
     def __init__(self):
@@ -23,7 +23,7 @@ class FakeClient(SCUClient):
         def wrapper(self, *args, **kw):
             if not self.session_valid():
                 return False, 'session invalid [login required]'
-            return func(*args, **kw)
+            return func(self, *args, **kw)
         return wrapper
 
     def set_baseinfo(self, stid: str, passwd: str, hashed: bool = False):
@@ -55,6 +55,9 @@ class FakeClient(SCUClient):
 
     @session_valid_required
     def get_student_pic(self, filepath: str = None) -> Tuple[bool, str]:
-        if not self.session_valid():
-            return False, '会话已过期，请重新登陆'
         return self.spider.fetch_student_pic(filepath)
+    
+    @session_valid_required
+    def get_all_term_scores(self) -> dict:
+        ...
+

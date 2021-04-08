@@ -1,19 +1,19 @@
 # scu-api
-Provide an api for Sichuan University
+提供与四川大学相关的信息接口
 
 
 ## Usage
 
-获取假用户`FakeClient`实例:
+获取本科生用户`U_Student`实例:
 
 ```python
 import scu_api
 
-my_client = scu_api.get_fakeclient()
+my_student = scu_api.get_u_student()
 
 ```
 
-`FakeClient`内置方法(目前为止)：
+`U_Student`内置方法(目前为止)：
 ```python
 
 @abstractmethod
@@ -74,29 +74,29 @@ def get_student_pic(self, filepath: str = None) -> Tuple[bool, str]:
 ```python
 import scu_api
 
-fakeclient = scu_api.get_fakeclient()
+u_student = scu_api.get_u_student()
 
-fakeclient.set_baseinfo(
+u_student.set_baseinfo(
     'student_id',
     'password',
     False # set True when password already encrypted by md5
 )
 
 # save current captcha image in `captcha.jpg`
-success, _ = fakeclient.get_captcha(filepath='captcha.jpg')
+success, _ = u_student.get_captcha(filepath='captcha.jpg')
 
 # you can only handle captcha manually for now
 captcha_str = input('please type captcha string: ')
 
 # login scu with `remember_me on`
-success, _ = fakeclient.login(captcha_str, True)
+success, _ = u_student.login(captcha_str, True)
 
 # get student name.
-success, std_name = fakeclient.get_student_name()
+success, std_name = u_student.get_student_name()
 
-print('Student:', std_name)
+print('姓名:', std_name)
 
 # save student picture in `student.jpg` which is shown in scu official
-success, std_pic = fakeclient.get_student_pic('student.jpg')
+success, std_pic = u_student.get_student_pic('student.jpg')
 
 ```

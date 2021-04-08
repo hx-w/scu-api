@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 from typing import Tuple, Callable
 
 
-class SCUClient(metaclass=ABCMeta):
+class SCUStudent(metaclass=ABCMeta):
     @abstractmethod
     def session_valid_required(func: Callable):
         '''
@@ -44,6 +44,7 @@ class SCUClient(metaclass=ABCMeta):
         @param[out] success(bool) 是否登录成功
         '''
 
+    @session_valid_required
     @abstractmethod
     def get_student_name(self) -> Tuple[bool, str]:
         '''
@@ -52,6 +53,7 @@ class SCUClient(metaclass=ABCMeta):
         @param[out] student_name(str) 学生姓名/失败反馈内容
         '''
 
+    @session_valid_required
     @abstractmethod
     def get_student_pic(self, filepath: str = None) -> Tuple[bool, str]:
         '''
@@ -59,4 +61,12 @@ class SCUClient(metaclass=ABCMeta):
         @param[in]  filepath(str) 存储图片的全路径，使用**.jpg**格式
         @param[out] success(bool) 是否获取成功
         @param[out] student_pic(str) 图片的base64编码
+        '''
+    
+    @session_valid_required
+    @abstractmethod
+    def get_all_term_scores(self) -> dict:
+        '''
+        @brief 获取学生所有学期的成绩
+        @param[out] 获取的原始数据 json=>dict
         '''

@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 
-from .fakeclient import FakeClient
+from .u_student import U_Student
 
 
-def get_fakeclient() -> FakeClient:
-    return FakeClient()
+def get_u_student() -> U_Student:
+    return U_Student()
