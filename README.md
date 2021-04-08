@@ -10,7 +10,6 @@
 import scu_api
 
 my_student = scu_api.get_u_student()
-
 ```
 
 `U_Student`内置方法(目前为止)：
@@ -67,6 +66,14 @@ def get_student_pic(self, filepath: str = None) -> Tuple[bool, str]:
     @param[out] student_pic(str) 图片的base64编码
     '''
 
+@session_valid_required
+@abstractmethod
+def get_all_term_scores(self, pagesize: int = -1) -> dict:
+    '''
+    @brief 获取学生所有学期的成绩
+    @param[in]  pagesize(int) 最近多少门课的成绩，默认-1为取全部课成绩
+    @param[out] 获取的原始数据 json=>dict
+    '''
 ```
 
 ## Example
@@ -98,5 +105,9 @@ print('姓名:', std_name)
 
 # save student picture in `student.jpg` which is shown in scu official
 success, std_pic = u_student.get_student_pic('student.jpg')
+
+success, scores = u_student.get_all_term_scores()
+
+print(scores)
 
 ```

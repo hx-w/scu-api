@@ -58,6 +58,6 @@ class U_Student(SCUStudent):
         return self.spider.fetch_student_pic(filepath)
     
     @session_valid_required
-    def get_all_term_scores(self) -> dict:
-        ...
+    def get_all_term_scores(self, pagesize: int = -1) -> dict:
+        return self.spider.fetch_all_term_scores(pagesize)
 

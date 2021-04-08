@@ -18,7 +18,7 @@ def req_logger(text):
             try:
                 return True, func(*args, **kw)
             except Exception as ept:
-                logger.error('%s %s' % (text, ept))
+                logger.error('[%s] %s' % (text, ept))
             return False, None
         return wrapper
     return decorator
@@ -42,13 +42,14 @@ class Spider:
             'login': 'http://zhjw.scu.edu.cn/j_spring_security_check',
             'student_name': 'http://zhjw.scu.edu.cn/student/rollManagement/rollInfo/index',
             'student_pic': 'http://zhjw.scu.edu.cn/main/queryStudent/img?',
+            'all_term_scores': 'http://zhjw.scu.edu.cn/student/integratedQuery/scoreQuery/allTermScores/data',
         }
 
         self.pattens = {
             'login': re.compile(r'errorCode='),
             'student_name': re.compile(r'title=".*?的照片'),
         }
-        ...
+
 
     @req_logger('try fetch captcha')
     def fetch_captcha(self, filepath: str = None) -> str:
@@ -116,4 +117,30 @@ class Spider:
             with open(filepath, 'wb') as imfile:
                 imfile.write(fetpic_resp.content)
         return base64Img_encode(fetpic_resp.content)
+    
+    @req_logger('try fetch all term scores')
+    def fetch_all_term_scores(self, pagesize: int) -> dict:
+        fetscores_headers = {
+            'Accept': 'application/json, text/javascript, */*; q=0.01',
+            'Referer': 'http://zhjw.scu.edu.cn/student/integratedQuery/scoreQuery/allTermScores/index',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+        fetscores_headers = dict(self.base_headers, **fetscores_headers)
+
+        if pagesize == -1:
+            _, prefetch = self.fetch_all_term_scores(1)
+            assert _, 'prefetch error'
+            totalCount = prefetch['list']['pageContext']['totalCount']
+            _, postfetch = self.fetch_all_term_scores(totalCount)
+            assert _, 'postfetch error'
+            return postfetch
+
+        post_data = { 'pageSize': pagesize }
+        fetpic_resp = self.session.post(
+            url=self.urls['all_term_scores'],
+            data=post_data,
+            headers=fetscores_headers
+        )
+
+        return ujson.loads(fetpic_resp.content.decode('utf-8'))
     

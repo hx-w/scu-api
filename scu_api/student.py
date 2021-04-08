@@ -65,8 +65,9 @@ class SCUStudent(metaclass=ABCMeta):
     
     @session_valid_required
     @abstractmethod
-    def get_all_term_scores(self) -> dict:
+    def get_all_term_scores(self, pagesize: int = -1) -> dict:
         '''
         @brief 获取学生所有学期的成绩
+        @param[in]  pagesize(int) 最近多少门课的成绩，默认-1为取全部课成绩
         @param[out] 获取的原始数据 json=>dict
         '''
