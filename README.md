@@ -1,6 +1,17 @@
 # scu-api
 提供与四川大学相关的信息接口
 
+## Install
+
+```bash
+pip install scu-api
+```
+
+国内用户
+
+```bash
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple scu-api
+```
 
 ## Usage
 
