@@ -29,7 +29,7 @@ class U_Student(SCUStudent):
             return func(self, *args, **kw)
         return wrapper
 
-    def set_baseinfo(self, stid: str, passwd: str, hashed: Optional[bool] = False):
+    def set_baseinfo(self, stid: str, passwd: str, hashed: Optional[bool] = False) -> NoReturn:
         self.student_id = stid
         self.passwd_hash = passwd
         if not hashed:

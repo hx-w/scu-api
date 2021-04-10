@@ -13,6 +13,38 @@ pip install scu-api
 pip install -i https://pypi.tuna.tsinghua.edu.cn/simple scu-api
 ```
 
+## API Format
+
+
+Api返回类型：`API_Status`
+```python
+OK = 0
+ERROR = 1
+WARNING = 2
+UNKNOWN = 3
+```
+
+通用Api返回类型：`API_ReturnType`
+```python
+{
+    "status": API_Status,
+    "result": Any  # API返回的有效内容，如果status不为OK，则返回内容为报错内容
+}
+```
+
+使用示例：
+
+```python
+_ = some_api_method()
+
+_['status']        # 获取状态码(API_Status类型)，同_.status
+_['status'].value  # 获取状态码对应的数字(int)，同_.status.value
+_['result']        # 获取API返回的有效内容，同_.result
+
+_.is_ok()          # 判断API返回状态是否正确(bool)
+```
+
+
 ## Usage
 
 获取本科生用户`U_Student`实例:
@@ -25,13 +57,13 @@ my_student = scu_api.get_u_student()
 
 `U_Student`内置方法(目前为止)：
 ```python
-
 @abstractmethod
-def set_baseinfo(self, stid: str, passwd: str, hashed: bool = False):
+def set_baseinfo(self, stid: str, passwd: str, hashed: Optional[bool] = False) -> NoReturn:
     '''
-    @stid(str)    学号
-    @passwd(str)  密码
-    @hashed(bool) 密码是否已经过md5加密 default=False
+    @brief 设置学生的基本信息，用于登陆
+    @param[in] stid(str)    学号
+    @param[in] passwd(str)  密码
+    @param[in] hashed(Optional[bool]) 密码是否已经过md5加密，默认False
     '''
 
 @abstractmethod
@@ -43,84 +75,70 @@ def session_valid(self) -> bool:
     '''
 
 @abstractmethod
-def get_captcha(self, filepath: str = None) -> Tuple[bool, str]:
+def get_captcha(self, filepath: Optional[str] = None) -> API_ReturnType:
     '''
     @brief 获取验证码
     @param[in]  filepath(str)  [可选的] 存储验证码图像的全路径，使用**.jpg**格式
-    @param[out] success(bool)  操作是否成功
-    @param[out] str(bool)      验证码图像base64编码
+    @param[out] _(API_ReturnType) 
+        {
+            'status': API_Status,
+            'result': str # 验证码的base64编码字符串
+        }
     '''
 
 @abstractmethod
-def login(self, catpcha: str, remember_me: bool) -> Tuple[bool, ]:
+def login(self, catpcha: str, remember_me: Optional[bool] = True) -> API_ReturnType:
     '''
     @brief 模拟登陆
     @param[in] captcha(str) 通过get_captcha获取的验证码识别后的字符串
-    @param[in] remember_me(bool) 是否开启两周内快速登录
-    @param[out] success(bool) 是否登录成功
+    @param[in] remember_me(Optional[bool]) [可选的]是否开启两周内快速登录，默认True
+    @param[out] _(API_ReturnType) 
+        {
+            'status': API_Status,
+            'result': None
+        }
     '''
 
 @session_valid_required
 @abstractmethod
-def get_student_name(self) -> Tuple[bool, str]:
+def get_student_name(self) -> API_ReturnType:
     '''
     @brief 获取学生姓名
-    @param[out] success(bool) 是否获取成功
-    @param[out] student_name(str) 学生姓名/失败反馈内容
+    @param[out] _(API_ReturnType)
+        {
+            'status': API_Status,
+            'result': str # 学生的姓名
+        }
     '''
 
 @session_valid_required
 @abstractmethod
-def get_student_pic(self, filepath: str = None) -> Tuple[bool, str]:
+def get_student_pic(self, filepath: Optional[str] = None) -> API_ReturnType:
     '''
     @brief 获取学生照片
-    @param[in]  filepath(str) 存储图片的全路径，使用**.jpg**格式
-    @param[out] success(bool) 是否获取成功
-    @param[out] student_pic(str) 图片的base64编码
+    @param[in]  filepath(Optinal[str]) [可选的]存储图片的全路径，使用**.jpg**格式
+    @param[out] _(API_ReturnType)
+        {
+            'status': API_Status,
+            'result': str # 学生照片的base64编码字符串
+        }
     '''
 
 @session_valid_required
 @abstractmethod
-def get_all_term_scores(self, pagesize: int = -1) -> dict:
+def get_all_term_scores(self, pagesize: Optional[int] = -1) -> API_ReturnType:
     '''
     @brief 获取学生所有学期的成绩
-    @param[in]  pagesize(int) 最近多少门课的成绩，默认-1为取全部课成绩
-    @param[out] 获取的原始数据 json=>dict
+    @param[in]  pagesize(Optional[int]) 最近多少门课的成绩，默认-1为取全部课成绩
+    @param[out] _(API_ReturnType)
+        {
+            'status': API_Status,
+            'result': dict # 教务处的学生成绩的原始json数据
+        }
     '''
 ```
 
 ## Example
 
 ```python
-import scu_api
-
-u_student = scu_api.get_u_student()
-
-u_student.set_baseinfo(
-    'student_id',
-    'password',
-    False # set True when password already encrypted by md5
-)
-
-# save current captcha image in `captcha.jpg`
-success, _ = u_student.get_captcha(filepath='captcha.jpg')
-
-# you can only handle captcha manually for now
-captcha_str = input('please type captcha string: ')
-
-# login scu with `remember_me on`
-success, _ = u_student.login(captcha_str, True)
-
-# get student name.
-success, std_name = u_student.get_student_name()
-
-print('姓名:', std_name)
-
-# save student picture in `student.jpg` which is shown in scu official
-success, std_pic = u_student.get_student_pic('student.jpg')
-
-success, scores = u_student.get_all_term_scores()
-
-print(scores)
-
 ```

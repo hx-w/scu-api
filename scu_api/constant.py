@@ -14,13 +14,18 @@ class Client_Status(Enum):
     ONLINE = auto()
 
 class API_Status(Enum):
-    OK = 'ok'
-    ERROR = 'error'
-    WARNING = 'warning'
-    UNKNOWN = 'unknown'
+    OK = 0
+    ERROR = 1
+    WARNING = 2
+    UNKNOWN = 3
 
 class API_ReturnType(UserDict):
     def __init__(self, status: API_Status, result: Any):
+        '''
+        @brief 标准API返回类型
+        @param status(API_Status) 状态码
+        @param result(Any) 返回的数据
+        '''
         self.data = {
             'status': status,
             'result': result
