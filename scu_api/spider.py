@@ -7,6 +7,7 @@ import re
 
 from .logger import get_mylogger
 from .utils import base64Img_encode
+from .constant import *
 
 logger = get_mylogger('Request')
 
@@ -16,17 +17,11 @@ def req_logger(text):
         @functools.wraps(func)
         def wrapper(*args, **kw):
             try:
-                return {
-                    'success': True,
-                    'result': func(*args, **kw)
-                }
+                return API_ReturnType(API_Status.OK, func(*args, **kw))
             except Exception as ept:
                 errmsg = '[%s] %s' % (text, ept)
                 logger.error(errmsg)
-                return {
-                    'success': False,
-                    'result': errmsg
-                }
+                return API_ReturnType(API_Status.ERROR, errmsg)
         return wrapper
     return decorator
 
@@ -59,7 +54,7 @@ class Spider:
 
 
     @req_logger('try fetch captcha')
-    def fetch_captcha(self, filepath: str = None) -> str:
+    def fetch_captcha(self, filepath: str = None) -> API_ReturnType:
         captcha_resp = self.session.get(self.urls['captcha'])
         assert captcha_resp.status_code == requests.codes.ok, 'Network Issue'
         if filepath:
@@ -68,7 +63,7 @@ class Spider:
         return base64Img_encode(captcha_resp.content)
 
     @req_logger('try login')
-    def login(self, stid: str, passwd: str, captcha: str, remb_me: bool) -> None:
+    def login(self, stid: str, passwd: str, captcha: str, remb_me: bool) -> API_ReturnType:
         post_data = {
             'j_username': stid,
             'j_password': passwd,
@@ -92,7 +87,7 @@ class Spider:
             self.pattens['login'], login_resp.content.decode('utf-8')), '输入信息错误'
 
     @req_logger('try get student name')
-    def fetch_student_name(self) -> str:
+    def fetch_student_name(self) -> API_ReturnType:
         fetname_headers = {
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'Referer': 'http://zhjw.scu.edu.cn/'
@@ -111,7 +106,7 @@ class Spider:
         return stdname[0][7:].replace('的照片', '')
 
     @req_logger('try fetch student picture')
-    def fetch_student_pic(self, filepath: str = None) -> str:
+    def fetch_student_pic(self, filepath: str) -> API_ReturnType:
         fetpic_headers = {
             'Accept': 'image/avif,image/webp,image/apng,image/*,*/*;q=0.8',
             'Referer': 'http://zhjw.scu.edu.cn/student/courseSelect/thisSemesterCurriculum/index'
@@ -126,7 +121,7 @@ class Spider:
         return base64Img_encode(fetpic_resp.content)
     
     @req_logger('try fetch all term scores')
-    def fetch_all_term_scores(self, pagesize: int) -> dict:
+    def fetch_all_term_scores(self, pagesize: int) -> API_ReturnType:
         fetscores_headers = {
             'Accept': 'application/json, text/javascript, */*; q=0.01',
             'Referer': 'http://zhjw.scu.edu.cn/student/integratedQuery/scoreQuery/allTermScores/index',
@@ -136,11 +131,11 @@ class Spider:
 
         if pagesize == -1:
             prefetch = self.fetch_all_term_scores(1)
-            assert prefetch['success'], 'prefetch error'
-            totalCount = prefetch['result']['list']['pageContext']['totalCount']
+            assert prefetch.is_ok(), 'prefetch error'
+            totalCount = prefetch.result['list']['pageContext']['totalCount']
             postfetch = self.fetch_all_term_scores(totalCount)
-            assert postfetch['success'], 'postfetch error'
-            return postfetch['result']
+            assert postfetch.is_ok(), 'postfetch error'
+            return postfetch.result
 
         post_data = { 'pageSize': pagesize }
         fetpic_resp = self.session.post(

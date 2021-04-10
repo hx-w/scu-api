@@ -44,7 +44,7 @@ class U_Student(SCUStudent):
             return False
         _ = self.spider.login(
             self.student_id, self.passwd_hash, captcha, remember_me)
-        self.status = [Client_Status.OFFLINE, Client_Status.ONLINE][_['success']]
+        self.status = [Client_Status.OFFLINE, Client_Status.ONLINE][_.is_ok()]
         return _
 
     def session_valid(self) -> bool:
