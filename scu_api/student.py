@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from abc import ABCMeta, abstractmethod
-from typing import Tuple, Callable
+from typing import Callable, Optional
+from .constant import API_ReturnType
 
 
 class SCUStudent(metaclass=ABCMeta):
@@ -11,7 +12,7 @@ class SCUStudent(metaclass=ABCMeta):
         '''
 
     @abstractmethod
-    def set_baseinfo(self, stid: str, passwd: str, hashed: bool = False):
+    def set_baseinfo(self, stid: str, passwd: str, hashed: Optional[bool] = False):
         '''
         @stid(str)    学号
         @passwd(str)  密码
@@ -27,16 +28,17 @@ class SCUStudent(metaclass=ABCMeta):
         '''
 
     @abstractmethod
-    def get_captcha(self, filepath: str = None) -> Tuple[bool, str]:
+    def get_captcha(self, filepath: Optional[str] = None) -> API_ReturnType:
         '''
         @brief 获取验证码
         @param[in]  filepath(str)  [可选的] 存储验证码图像的全路径，使用**.jpg**格式
+        @param[out] Dict[]
         @param[out] success(bool)  操作是否成功
         @param[out] str(bool)      验证码图像base64编码
         '''
 
     @abstractmethod
-    def login(self, catpcha: str, remember_me: bool) -> Tuple[bool, ]:
+    def login(self, catpcha: str, remember_me: Optional[bool] = True) -> API_ReturnType:
         '''
         @brief 模拟登陆
         @param[in] captcha(str) 通过get_captcha获取的验证码识别后的字符串
@@ -46,7 +48,7 @@ class SCUStudent(metaclass=ABCMeta):
 
     @session_valid_required
     @abstractmethod
-    def get_student_name(self) -> Tuple[bool, str]:
+    def get_student_name(self) -> API_ReturnType:
         '''
         @brief 获取学生姓名
         @param[out] success(bool) 是否获取成功
@@ -55,7 +57,7 @@ class SCUStudent(metaclass=ABCMeta):
 
     @session_valid_required
     @abstractmethod
-    def get_student_pic(self, filepath: str = None) -> Tuple[bool, str]:
+    def get_student_pic(self, filepath: Optional[str] = None) -> API_ReturnType:
         '''
         @brief 获取学生照片
         @param[in]  filepath(str) 存储图片的全路径，使用**.jpg**格式
@@ -65,7 +67,7 @@ class SCUStudent(metaclass=ABCMeta):
     
     @session_valid_required
     @abstractmethod
-    def get_all_term_scores(self, pagesize: int = -1) -> dict:
+    def get_all_term_scores(self, pagesize: Optional[int] = -1) -> API_ReturnType:
         '''
         @brief 获取学生所有学期的成绩
         @param[in]  pagesize(int) 最近多少门课的成绩，默认-1为取全部课成绩

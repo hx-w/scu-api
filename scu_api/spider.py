@@ -16,10 +16,17 @@ def req_logger(text):
         @functools.wraps(func)
         def wrapper(*args, **kw):
             try:
-                return True, func(*args, **kw)
+                return {
+                    'success': True,
+                    'result': func(*args, **kw)
+                }
             except Exception as ept:
-                logger.error('[%s] %s' % (text, ept))
-            return False, None
+                errmsg = '[%s] %s' % (text, ept)
+                logger.error(errmsg)
+                return {
+                    'success': False,
+                    'result': errmsg
+                }
         return wrapper
     return decorator
 
@@ -128,12 +135,12 @@ class Spider:
         fetscores_headers = dict(self.base_headers, **fetscores_headers)
 
         if pagesize == -1:
-            _, prefetch = self.fetch_all_term_scores(1)
-            assert _, 'prefetch error'
-            totalCount = prefetch['list']['pageContext']['totalCount']
-            _, postfetch = self.fetch_all_term_scores(totalCount)
-            assert _, 'postfetch error'
-            return postfetch
+            prefetch = self.fetch_all_term_scores(1)
+            assert prefetch['success'], 'prefetch error'
+            totalCount = prefetch['result']['list']['pageContext']['totalCount']
+            postfetch = self.fetch_all_term_scores(totalCount)
+            assert postfetch['success'], 'postfetch error'
+            return postfetch['result']
 
         post_data = { 'pageSize': pagesize }
         fetpic_resp = self.session.post(
