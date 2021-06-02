@@ -19,6 +19,10 @@ class API_Status(Enum):
     WARNING = 2
     UNKNOWN = 3
 
+class Student_Type(Enum):
+    UNDERGRADUATE = auto()
+    GRADUATE = auto()
+
 class API_ReturnType(UserDict):
     def __init__(self, status: API_Status, result: Any):
         '''

@@ -35,13 +35,13 @@ UNKNOWN = 3
 使用示例：
 
 ```python
-_ = some_api_method()
+resp = some_api_method()
 
-_['status']        # 获取状态码(API_Status类型)，同_.status
-_['status'].value  # 获取状态码对应的数字(int)，同_.status.value
-_['result']        # 获取API返回的有效内容，同_.result
+resp['status']        # 获取状态码(API_Status类型)，同resp.status
+resp['status'].value  # 获取状态码对应的数字(int)，同resp.status.value
+resp['result']        # 获取API返回的有效内容，同resp.result
 
-_.is_ok()          # 判断API返回状态是否正确(bool)
+resp.is_ok()          # 判断API返回状态是否正确(bool)
 ```
 
 
@@ -52,7 +52,12 @@ _.is_ok()          # 判断API返回状态是否正确(bool)
 ```python
 import scu_api
 
-my_student = scu_api.get_u_student()
+# 默认为本科生
+my_student = scu_api.get_student()
+
+# 或指定本科生种类，目前只支持本科生一种
+from scu_api.Student_Type import UNDERGRADUATE
+my_student = scu_api.get_student(UNDERGRADUATE)
 ```
 
 `U_Student`内置方法(目前为止)：
@@ -141,4 +146,32 @@ def get_all_term_scores(self, pagesize: Optional[int] = -1) -> API_ReturnType:
 ## Example
 
 ```python
+# -*- coding: utf-8 -*-
+import scu_api
+
+bot = scu_api.get_student(scu_api.Student_Type.UNDERGRADUATE)
+
+print('尝试请求', bot.get_student_name())
+
+# 设置基础信息
+bot.set_baseinfo('student_id', 'password')
+
+# 获取验证码
+resp = bot.get_captcha(filepath='captcha.jpg')
+print('验证码请求', resp.is_ok())
+captcha = input('输入验证码: ')
+
+# 模拟登录
+resp = bot.login(captcha, True)
+print('登录', resp.is_ok())
+
+resp = bot.get_student_name()
+print('姓名', resp.result)
+
+resp = bot.get_student_pic('student.jpg')
+print('头像请求', resp.is_ok())
+
+resp = bot.get_all_term_scores()
+print('成绩请求', resp.is_ok())
+print(resp.result)
 ```
