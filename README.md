@@ -1,7 +1,5 @@
 ![PyTest](https://github.com/hx-w/scu-api/workflows/PyTest/badge.svg)
-
 [![CodeFactor](https://www.codefactor.io/repository/github/hx-w/scu-api/badge)](https://www.codefactor.io/repository/github/hx-w/scu-api)
-
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/hx-w/scu-api?include_prereleases)
 
 # scu-api
