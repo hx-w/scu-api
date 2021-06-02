@@ -132,3 +132,4 @@ dmypy.json
 script.py
 
 test/
+de_noise.py
