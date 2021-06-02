@@ -1,5 +1,5 @@
 import sys
-sys.path.append('..')
+sys.path.append('../scu-api')
 import scu_api
 
 bot = scu_api.get_student(scu_api.Student_Type.UNDERGRADUATE)
