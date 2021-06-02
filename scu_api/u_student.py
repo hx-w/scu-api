@@ -4,7 +4,7 @@ import functools
 from .student import *
 from .utils import *
 from .spider import Spider
-from .constant import Client_Status
+from .constant import API_Status, Client_Status
 
 
 class U_Student(SCUStudent):
@@ -22,10 +22,7 @@ class U_Student(SCUStudent):
         @functools.wraps(func)
         def wrapper(self, *args, **kw):
             if not self.session_valid():
-                return {
-                    'success': False, 
-                    'result': 'session invalid [login required]'
-                }
+                return API_ReturnType(API_Status.ERROR, "session invalid [login required]")
             return func(self, *args, **kw)
         return wrapper
 
@@ -59,8 +56,7 @@ class U_Student(SCUStudent):
     @session_valid_required
     def get_student_pic(self, filepath: Optional[str] = None) -> API_ReturnType:
         return self.spider.fetch_student_pic(filepath)
-    
+
     @session_valid_required
     def get_all_term_scores(self, pagesize: Optional[int] = -1) -> API_ReturnType:
         return self.spider.fetch_all_term_scores(pagesize)
-

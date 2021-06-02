@@ -52,7 +52,6 @@ class Spider:
             'student_name': re.compile(r'title=".*?的照片'),
         }
 
-
     @req_logger('try fetch captcha')
     def fetch_captcha(self, filepath: str = None) -> API_ReturnType:
         captcha_resp = self.session.get(self.urls['captcha'])
@@ -95,7 +94,7 @@ class Spider:
         fetname_headers = dict(self.base_headers, **fetname_headers)
         fetname_resp = self.session.get(
             url=self.urls['student_name'], headers=fetname_headers)
-            
+
         assert fetname_resp.status_code == requests.codes.ok, 'Network Issue'
 
         stdname = re.search(
@@ -112,14 +111,15 @@ class Spider:
             'Referer': 'http://zhjw.scu.edu.cn/student/courseSelect/thisSemesterCurriculum/index'
         }
         fetpic_headers = dict(self.base_headers, **fetpic_headers)
-        
-        fetpic_resp = self.session.get(url=self.urls['student_pic'], headers=fetpic_headers)
+
+        fetpic_resp = self.session.get(
+            url=self.urls['student_pic'], headers=fetpic_headers)
         assert fetpic_resp.status_code == requests.codes.ok, 'Network Issue'
         if filepath:
             with open(filepath, 'wb') as imfile:
                 imfile.write(fetpic_resp.content)
         return base64Img_encode(fetpic_resp.content)
-    
+
     @req_logger('try fetch all term scores')
     def fetch_all_term_scores(self, pagesize: int) -> API_ReturnType:
         fetscores_headers = {
@@ -137,12 +137,10 @@ class Spider:
             assert postfetch.is_ok(), 'postfetch error'
             return postfetch.result
 
-        post_data = { 'pageSize': pagesize }
+        post_data = {'pageSize': pagesize}
         fetpic_resp = self.session.post(
             url=self.urls['all_term_scores'],
             data=post_data,
             headers=fetscores_headers
         )
-
         return ujson.loads(fetpic_resp.content.decode('utf-8'))
-    
