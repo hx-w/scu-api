@@ -1,5 +1,6 @@
 ![PyTest](https://github.com/hx-w/scu-api/workflows/PyTest/badge.svg)
-[![CodeFactor](https://www.codefactor.io/repository/github/hx-w/scu-api/badge)](https://www.codefactor.io/repository/github/hx-w/scu-api)
+![CodeFactor](https://www.codefactor.io/repository/github/hx-w/scu-api/badge)
+![Pypi downloads](https://img.shields.io/pypi/dm/scu-api)
 ![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/hx-w/scu-api?include_prereleases)
 # scu-api
 提供与四川大学相关的信息接口
