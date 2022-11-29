@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from abc import ABCMeta, abstractmethod
 from typing import Callable, Optional, NoReturn
-from .constant import API_ReturnType
+from .constant import RespType
 
 
 class SCUStudent(metaclass=ABCMeta):
@@ -29,44 +29,44 @@ class SCUStudent(metaclass=ABCMeta):
         '''
 
     @abstractmethod
-    def get_captcha(self, filepath: Optional[str] = None) -> API_ReturnType:
+    def get_captcha(self, filepath: Optional[str] = None) -> RespType:
         '''
         @brief 获取验证码(base64编码字符串)
         @param[in]  filepath(str)  [可选的] 存储验证码图像的全路径，使用**.jpg**格式
-        @param[out] _(API_ReturnType)
+        @param[out] _(RespType)
         '''
 
     @abstractmethod
-    def login(self, catpcha: str, remember_me: Optional[bool] = True) -> API_ReturnType:
+    def login(self, catpcha: str, remember_me: Optional[bool] = True) -> RespType:
         '''
         @brief 模拟登陆
         @param[in] captcha(str) 通过get_captcha获取的验证码识别后的字符串
         @param[in] remember_me(Optional[bool]) [可选的]是否开启两周内快速登录，默认True
-        @param[out] _(API_ReturnType) 
+        @param[out] _(RespType) 
         '''
 
     @session_valid_required
     @abstractmethod
-    def get_student_name(self) -> API_ReturnType:
+    def get_student_name(self) -> RespType:
         '''
         @brief 获取学生姓名
-        @param[out] _(API_ReturnType)
+        @param[out] _(RespType)
         '''
 
     @session_valid_required
     @abstractmethod
-    def get_student_pic(self, filepath: Optional[str] = None) -> API_ReturnType:
+    def get_student_pic(self, filepath: Optional[str] = None) -> RespType:
         '''
         @brief 获取学生照片(base64编码字符串)
         @param[in]  filepath(Optinal[str]) [可选的]存储图片的全路径，使用**.jpg**格式
-        @param[out] _(API_ReturnType)
+        @param[out] _(RespType)
         '''
     
     @session_valid_required
     @abstractmethod
-    def get_all_term_scores(self, pagesize: Optional[int] = -1) -> API_ReturnType:
+    def get_all_term_scores(self, pagesize: Optional[int] = -1) -> RespType:
         '''
         @brief 获取学生所有学期的成绩
         @param[in]  pagesize(Optional[int]) 最近多少门课的成绩，默认-1为取全部课成绩
-        @param[out] _(API_ReturnType)
+        @param[out] _(RespType)
         '''
